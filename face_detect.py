@@ -62,7 +62,7 @@ def prikazi(img, filt,orginal):
 def podijeliSlike(path):
     brojac = 0
     for filename in glob.glob(path):
-        image = cv2.imread(imagePath)
+        image = cv2.imread(filename)
         if brojac % 2 == 0:
             spremiSliku(image, filename, "train")
         else:
