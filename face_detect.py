@@ -5,6 +5,8 @@ import os
 from matplotlib import pyplot as plt
 from PIL import Image
 import glob
+from resizeimage import resizeimage
+
 
 def spremiSliku(slika, filename,path):
     cv2.imwrite(os.path.join(path , filename[8:]),slika)
@@ -28,7 +30,7 @@ def svjetlina(image, brightness = 0):
     return res
 
 def kontrast(image, contrast=0):
-    buf=0
+    buf=[]
     if contrast != 0:
         f = 131*(contrast + 127)/(127*(131-contrast))
         alpha_c = f
@@ -63,10 +65,10 @@ def podijeliSlike(path):
     brojac = 0
     for filename in glob.glob(path):
         image = cv2.imread(filename)
-        if brojac % 2 == 0:
-            spremiSliku(image, filename, "train")
-        else:
+        if brojac % 5 == 0:
             spremiSliku(image, filename, "test")
+        else:
+            spremiSliku(image, filename, "train")
         brojac = brojac + 1
 
 
@@ -87,27 +89,59 @@ for filename in glob.glob('dataset/*'):
 
     faces = faceCascade.detectMultiScale(
         gray,
-        scaleFactor=1.1,
+        scaleFactor=1.2,
         minNeighbors=5,
         minSize=(30, 30)
     )
 
     img = np.zeros([height,width,3],dtype=np.uint8)
     img.fill(0)
- 
+
+    imResize = im
+    josNovijaSlika = image.copy()
+    novaSlika = image.copy()
     for (x, y, w, h) in faces:
         file.write(filename + "  " + str(x) + "  " +  str(y) + "  " +  str(w) + "  " +  str(h)+ "\n") #Anotacija
-        cv2.rectangle(img, (x, y), (x+w, y+h), (255, 255, 255), -1)
+        cv2.rectangle(img, (x, y), (x+w, y+h), (255, 255, 255), -1)      
+        cv2.rectangle(novaSlika, (x, y), (x+w, y+h), (255, 255, 255), -1)  
+        maxi = w
+        if h > maxi:
+            maxi = h
+        area = (x, y, maxi+x, y+maxi)
+        cropped_img = im.crop(area)
+        imResize = cropped_img.resize((128,128), Image.ANTIALIAS)
+        
 
+        pil_image = imResize.convert('RGB') 
+        open_cv_image = np.array(pil_image) 
+        # Convert RGB to BGR 
+        open_cv_image = open_cv_image[:, :, ::-1].copy()
+
+        kontrast_nad_maskom=svjetlina(open_cv_image,50)
+
+        orb = cv2.ORB_create()
+        # find the keypoints with ORB
+        kp = orb.detect(kontrast_nad_maskom,None)
+        # compute the descriptors with ORB
+        kp, des = orb.compute(kontrast_nad_maskom, kp)
+        # draw only keypoints location,not size and orientation
+        img2 = cv2.drawKeypoints(kontrast_nad_maskom, kp, None, color=(0,255,0), flags=0)
+        plt.imshow(img2), plt.show()
+
+
+    '''
     masked_data = cv2.bitwise_and(image, img)
 
-    spremiSliku(masked_data, filename,'maskiraneSlike')
+    #spremiSliku(masked_data, filename,'maskiraneSlike')
 
-    slika = filter(image, 5, filename)
-    filter2(slika, 5, filename)
+    #slika = filter(image, 5, filename)
+    #filter2(slika, 5, filename)
 
-    spremiSliku(histogram(kontrast(svjetlina(image,50),20)), filename,'editovaneSlike')
+    #spremiSliku(histogram(kontrast(svjetlina(image,50),20)), filename,'editovaneSlike')
+    '''
+
 
 file.close()
 
-podijeliSlike("dataset/*")
+#podijeliSlike("dataset/*")
+
