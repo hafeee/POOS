@@ -8,13 +8,16 @@ import glob
 from resizeimage import resizeimage
 
 
+def kontrast(image, contrast=0):
+    buf=[]
+    if contrast != 0:
+        f = 131*(contrast + 127)/(127*(131-contrast))
+        alpha_c = f
+        gamma_c = 127*(1-f) 
 
-def svjetlina(image, brightness = 0):
-    beta =50
-    res = cv2.add(image, beta) 
-    return res
+        buf = cv2.addWeighted(image, alpha_c, image, 0, gamma_c)
 
-
+    return buf  
 
 def prikazi_jednu(img):
     plt.imshow(img),plt.title('Slika')
@@ -55,8 +58,8 @@ def resizeAndGrayscale(img):
 def obradiSliku(image):
     image = resizeAndGrayscale(image)
     #Metoda poboljsavanja
-    image=svjetlina(image,50)
-
+    image=kontrast(image,50)
+    
     #dodani deskriptor
     orb = cv2.ORB_create()
     # find the keypoints with ORB

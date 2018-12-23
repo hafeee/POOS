@@ -136,9 +136,12 @@ for filename in glob.glob('dataset/*'):
 
     #slika = filter(image, 5, filename)
     #filter2(slika, 5, filename)
-
+    
     #spremiSliku(histogram(kontrast(svjetlina(image,50),20)), filename,'editovaneSlike')
     '''
+    slike=kontrast(image,30)
+    cv2.imshow("", slike)
+    cv2.waitKey(0)
 
 
 file.close()

@@ -1,2 +1,6 @@
-dataset/sleek-hair-101-31.jpg  268  162  209  209
-dataset/FDLE investigating Miami Taser incident that ended in suspect's death 20180827213958.jpg_12561941_ver1.0_640_360.jpg  221  42  210  210
+dataset\02_01_slide_nature.jpg  365  236  62  62
+dataset\0dacffae-b125-4c02-8c0c-890c6acb663c-53g35g343gq.jpg  34  56  390  390
+dataset\19045.jpg  275  167  253  253
+dataset\19045.jpg  587  134  205  205
+dataset\19045.jpg  294  449  205  205
+dataset\1920.jpg  1038  189  83  83
